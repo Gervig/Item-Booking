@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
@@ -20,7 +21,7 @@ public class StudentDTO
     private String name;
     private Date enrollmentDate;
     private int phone;
-    private List<ItemDTO> itemList;
+    private Set<ItemDTO> itemList;
 
     public StudentDTO(Student student, boolean includeDetails)
     {
@@ -34,7 +35,7 @@ public class StudentDTO
             this.itemList = student.getItemList()
                     .stream()
                     .map(item -> new ItemDTO(item, false))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
         }
     }
 

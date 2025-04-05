@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,7 +26,7 @@ public class Student
 
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST) // a student should still persist even if an item is deleted
-    private List<Item> itemList;
+    private Set<Item> itemList;
 
     public void addItem(Item item)
     {
