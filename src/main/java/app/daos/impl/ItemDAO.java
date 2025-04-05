@@ -2,6 +2,7 @@ package app.daos.impl;
 
 import app.daos.IDAO;
 import app.entities.Item;
+import app.entities.Student;
 import app.exceptions.ApiException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -12,6 +13,7 @@ public class ItemDAO implements IDAO<Item, Long>
 {
     private static EntityManagerFactory emf;
     private static ItemDAO instance;
+    private static StudentDAO studentDAO = StudentDAO.getInstance(emf);
 
     public static ItemDAO getInstance(EntityManagerFactory _emf)
     {
@@ -94,6 +96,26 @@ public class ItemDAO implements IDAO<Item, Long>
         } catch (Exception e)
         {
             throw new ApiException(401, "Error removing item", e);
+        }
+    }
+
+    public void addItemToStudent(Long itemId, Long studentId)
+    {
+        try(EntityManager em = emf.createEntityManager())
+        {
+            Item item = em.find(Item.class, itemId);
+            Student student = em.find(Student.class, studentId);
+            if(item == null || student == null)
+            {
+                throw new NullPointerException();
+            }
+            student.addItem(item);
+            item.setStudent(student);
+            studentDAO.update(student);
+            update(item);
+        } catch (Exception e)
+        {
+            throw new ApiException(401, "Error adding item to student", e);
         }
     }
 }
