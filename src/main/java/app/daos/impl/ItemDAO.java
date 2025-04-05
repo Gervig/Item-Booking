@@ -1,6 +1,7 @@
 package app.daos.impl;
 
 import app.daos.IDAO;
+import app.dtos.ItemDTO;
 import app.entities.Item;
 import app.entities.Student;
 import app.exceptions.ApiException;
@@ -8,6 +9,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ItemDAO implements IDAO<Item, Long>
 {
@@ -116,6 +119,27 @@ public class ItemDAO implements IDAO<Item, Long>
         } catch (Exception e)
         {
             throw new ApiException(401, "Error adding item to student", e);
+        }
+    }
+
+    public Set<ItemDTO> getItemsByStudent(Long studentId)
+    {
+        try(EntityManager em = emf.createEntityManager())
+        {
+        Student student = em.find(Student.class, studentId);
+
+        Set<ItemDTO> itemSet = em.createQuery("SELECT i FROM Item i JOIN i.student s WHERE s.id = :studentId", Item.class)
+                .setParameter("studentId", studentId)
+                .getResultList()
+                .stream()
+                .map(item -> new ItemDTO(item,true))
+                .collect(Collectors.toSet());
+
+        return itemSet;
+
+        } catch (Exception e)
+        {
+            throw new ApiException(401, "Error getting items by student with ID: " + studentId, e);
         }
     }
 }
