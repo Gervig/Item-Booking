@@ -26,4 +26,9 @@ public class Student
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST) // a student should still persist even if an item is deleted
     private List<Item> itemList;
+    
+    public void addItem(Item item)
+    {
+        this.itemList.add(item);
+    }
 }
