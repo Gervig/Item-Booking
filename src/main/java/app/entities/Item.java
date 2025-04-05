@@ -1,6 +1,6 @@
 package app.entities;
 
-import enums.ItemCategory;
+import app.enums.ItemCategory;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;

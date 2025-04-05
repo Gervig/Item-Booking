@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -18,13 +20,22 @@ public class StudentDTO
     private String name;
     private Date enrollmentDate;
     private int phone;
+    private List<ItemDTO> itemList;
 
-    public StudentDTO(Student student)
+    public StudentDTO(Student student, boolean includeDetails)
     {
         this.id = student.getId();
         this.name = student.getName();
         this.enrollmentDate = student.getEnrollmentDate();
         this.phone = student.getPhone();
+
+        if(includeDetails && student.getItemList() != null)
+        {
+            this.itemList = student.getItemList()
+                    .stream()
+                    .map(item -> new ItemDTO(item, false))
+                    .collect(Collectors.toList());
+        }
     }
 
     public Student toEntity()
