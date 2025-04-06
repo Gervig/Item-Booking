@@ -6,9 +6,12 @@ import app.dtos.ErrorMessage;
 import app.dtos.ItemDTO;
 import app.entities.Item;
 import app.entities.Student;
+import app.enums.ItemCategory;
 import app.populators.ItemPopulator;
 import app.rest.ApplicationConfig;
 import app.rest.ItemRoutes;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import jakarta.persistence.EntityManager;
@@ -18,9 +21,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -28,10 +34,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ItemControllerTest
 {
-
+    private ObjectMapper objectMapper = new ObjectMapper();
     private static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactoryForTest();
     private static final ItemController itemController = new ItemController(emf);
     private static final ItemDAO itemDAO = ItemDAO.getInstance(emf);
+    private static final String contentType = "application/json";
 
     @BeforeEach
     void setup()
@@ -91,13 +98,16 @@ class ItemControllerTest
                 .body("size()", is(5))
                 .log().all()
                 .extract()
-                .as(new TypeRef<List<ItemDTO>>(){});
+                .as(new TypeRef<List<ItemDTO>>()
+                {
+                });
 
         assertThat(itemDTOTest.size(), is(5));
 
     }
 
     @Test
+    @DisplayName("Test getting item with ID 1")
     void getItemById()
     {
         given()
@@ -109,30 +119,89 @@ class ItemControllerTest
     }
 
     @Test
+    @DisplayName("Test creating a new Item")
     void createItem()
     {
-        given()
-                .when()
-                .post()
+        ItemDTO itemDTO = getTestItemDTO();
+
+        try
+        {
+            String json = objectMapper.writeValueAsString(itemDTO);
+            given()
+                    .when()
+                    .body(json)
+                    .contentType(contentType)
+                    .accept(contentType)
+                    .post("/items")
+                    .then()
+                    .statusCode(200)
+                    .body("name", equalTo("Test item"));
+        } catch (JsonProcessingException jpe)
+        {
+            jpe.printStackTrace();
+            fail();
+        }
     }
 
     @Test
+    @DisplayName("Test updating an Item")
     void updateItem()
     {
+        ItemDTO itemDTO = getTestItemDTO();
+        try
+        {
+            String json = objectMapper.writeValueAsString(itemDTO);
+
+            given()
+                    .when()
+                    .body(json)
+                    .contentType(contentType)
+                    .accept(contentType)
+                    .put("items/1")
+                    .then()
+                    .statusCode(200)
+                    .body("name", equalTo("Test item"));
+        } catch (JsonProcessingException jpe)
+        {
+            jpe.printStackTrace();
+            fail();
+        }
     }
 
     @Test
     void deleteItem()
     {
+        when()
+                .delete("items/1")
+                .then()
+                .statusCode(204);
+
+        when()
+                .get("items/1")
+                .then()
+                .statusCode(404);
     }
 
     @Test
     void addItemToStudent()
     {
+
     }
 
     @Test
     void getItemsByStudent()
     {
+    }
+
+    private ItemDTO getTestItemDTO()
+    {
+        ItemDTO itemDTO = ItemDTO.builder()
+                .name("Test item")
+                .purchasePrice(BigDecimal.valueOf(11.11))
+                .category(ItemCategory.PRINT)
+                .acquisitionDate(null) // jackson can't handle LocalDate for some reason
+                .description("This is a test item")
+                .build();
+        return itemDTO;
     }
 }
