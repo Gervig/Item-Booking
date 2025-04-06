@@ -55,11 +55,11 @@ public class ItemController implements IItem<ItemDTO, StudentDTO, Long>
         Student student = item.getStudent();
         // checks if the student exists,
         // if not creates them and adds them to the item
-        if (student != null)
-        {
-            student = studentDAO.create(student);
-            item.setStudent(student);
-        }
+//        if (student != null && student.getId() != null)
+//        {
+//            student = studentDAO.create(student);
+//            item.setStudent(student);
+//        }
         // checks if item has already been created
         if (itemDTO.getId() == null)
         {

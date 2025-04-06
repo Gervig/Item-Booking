@@ -5,6 +5,8 @@ import app.entities.Student;
 import app.exceptions.ApiException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceException;
 
 import java.util.List;
 
@@ -29,12 +31,38 @@ public class StudentDAO implements IDAO<Student, Long>
         try (EntityManager em = emf.createEntityManager())
         {
             em.getTransaction().begin();
+            // checks if student already exists
+            if (student.getId() != null)
+            {
+                return student;
+            }
             em.persist(student);
             em.getTransaction().commit();
             return student;
+        } catch (PersistenceException pe)
+        {
+            // If the student already exists, fetch and return the existing one
+            return findExistingStudent(student);
         } catch (Exception e)
         {
             throw new ApiException(401, "Error creating student", e);
+        }
+    }
+
+    private Student findExistingStudent(Student student)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery(
+                            "SELECT s FROM Student s WHERE s.name = :name " +
+                                    "AND s.phone = :phone ",
+                            Student.class)
+                    .setParameter("name", student.getName())
+                    .setParameter("phone", student.getPhone())
+                    .getSingleResult();
+        } catch (NoResultException e)
+        {
+            throw new ApiException(500, "Student exists but could not be retrieved", e);
         }
     }
 

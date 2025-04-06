@@ -21,8 +21,10 @@ public class Student
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String name;
     private LocalDate enrollmentDate;
+    @Column(unique = true)
     private int phone;
 
     @ToString.Exclude //avoids infinite to.String recursion

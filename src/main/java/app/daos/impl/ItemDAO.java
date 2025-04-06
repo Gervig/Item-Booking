@@ -35,11 +35,10 @@ public class ItemDAO implements IDAO<Item, Long>
         try (EntityManager em = emf.createEntityManager())
         {
             em.getTransaction().begin();
-            // checks if Item already exists
-            Item existingItem = read(item.getId());
-            if(existingItem != null)
+            // checks if item exists
+            if(item.getId()!=null)
             {
-                return existingItem;
+                return item;
             }
             em.persist(item);
             em.getTransaction().commit();
