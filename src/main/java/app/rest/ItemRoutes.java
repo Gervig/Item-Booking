@@ -79,6 +79,33 @@ public class ItemRoutes
                         ctx.status(400).json(error);
                     }
                 });
+                put("/{id}", ctx ->
+                {
+                    Long id = Long.valueOf(ctx.pathParam("id"));
+                    try
+                    {
+                        ItemDTO test = itemController.getItemById(id);
+                        if (test == null)
+                        {
+                            throw new NullPointerException();
+                        }
+                        ItemDTO incomingTrip = ctx.bodyAsClass(ItemDTO.class);
+                        if(incomingTrip.getId() == null)
+                        {
+                            incomingTrip.setId(id); // in case the body forgot to add the id
+                        }
+                        ItemDTO returnedTrip = itemController.updateItem(incomingTrip);
+                        ctx.json(returnedTrip);
+                    } catch (IllegalStateException ise)
+                    {
+                        ErrorMessage error = new ErrorMessage("Incorrect JSON");
+                        ctx.status(400).json(error);
+                    } catch (Exception e)
+                    {
+                        ErrorMessage error = new ErrorMessage("No trip with that ID");
+                        ctx.status(404).json(error);
+                    }
+                });
                 post("/populate", ctx ->
                 {
                     List<Item> items = ItemPopulator.populate();

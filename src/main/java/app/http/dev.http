@@ -26,3 +26,11 @@ Content-Type: application/json
   "description": "This is a new item",
   "student": null
 }
+
+### Update an item
+PUT http://localhost:7070/api/items/1
+Content-Type: application/json
+
+{
+  "purchasePrice": 7.55
+}
