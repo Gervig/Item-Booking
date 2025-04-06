@@ -32,7 +32,7 @@ public class Item
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "student_id")
     @Setter
     private Student student;
 }

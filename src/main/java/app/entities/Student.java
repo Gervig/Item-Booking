@@ -16,15 +16,16 @@ import java.util.Set;
 @Builder
 @Getter
 @Entity
+@Table(name = "student", uniqueConstraints = {
+        @UniqueConstraint(name = "unique_name_phone", columnNames = {"name", "phone"})
+})
 public class Student
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String name;
     private LocalDate enrollmentDate;
-    @Column(unique = true)
     private int phone;
 
     @ToString.Exclude //avoids infinite to.String recursion
