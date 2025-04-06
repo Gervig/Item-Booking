@@ -11,6 +11,7 @@ import app.exceptions.ApiException;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
+import java.util.Set;
 
 public class ItemController implements IItem<ItemDTO, StudentDTO, Long>
 {
@@ -59,7 +60,11 @@ public class ItemController implements IItem<ItemDTO, StudentDTO, Long>
             student = studentDAO.create(student);
             item.setStudent(student);
         }
-        item = itemDAO.create(item);
+        // checks if item has already been created
+        if (itemDTO.getId() == null)
+        {
+            item = itemDAO.create(item);
+        }
         ItemDTO newItemDTO = new ItemDTO(item, true);
         return newItemDTO;
     }
@@ -68,23 +73,23 @@ public class ItemController implements IItem<ItemDTO, StudentDTO, Long>
     public ItemDTO updateItem(ItemDTO itemDTO) throws ApiException
     {
         Item existingItem = itemDAO.read(itemDTO.getId());
-        if(existingItem == null)
+        if (existingItem == null)
         {
             throw new ApiException(404, "Item not found");
         }
         //TODO clean this up
 
         // ensures no null values
-        if(itemDTO.getName() != null) existingItem.setName(itemDTO.getName());
-        if(itemDTO.getPurchasePrice() != null) existingItem.setPurchasePrice(itemDTO.getPurchasePrice());
-        if(itemDTO.getCategory() != null) existingItem.setCategory(itemDTO.getCategory());
-        if(itemDTO.getAcquisitionDate() != null) existingItem.setAcquisitionDate(itemDTO.getAcquisitionDate());
-        if(itemDTO.getDescription() != null) existingItem.setDescription(itemDTO.getDescription());
-        if(itemDTO.getStudent() != null)
+        if (itemDTO.getName() != null) existingItem.setName(itemDTO.getName());
+        if (itemDTO.getPurchasePrice() != null) existingItem.setPurchasePrice(itemDTO.getPurchasePrice());
+        if (itemDTO.getCategory() != null) existingItem.setCategory(itemDTO.getCategory());
+        if (itemDTO.getAcquisitionDate() != null) existingItem.setAcquisitionDate(itemDTO.getAcquisitionDate());
+        if (itemDTO.getDescription() != null) existingItem.setDescription(itemDTO.getDescription());
+        if (itemDTO.getStudent() != null)
         {
             // tries to find the student
             Student existingStudent = studentDAO.read(itemDTO.getStudent().getId());
-            if(existingStudent == null)
+            if (existingStudent == null)
             {
                 // if it's a new student, creates them
                 Student newStudent = itemDTO.getStudent().toEntity();
@@ -114,5 +119,11 @@ public class ItemController implements IItem<ItemDTO, StudentDTO, Long>
         Item item = itemDAO.addItemToStudent(itemId, studentId);
         ItemDTO itemDTO = new ItemDTO(item, true);
         return itemDTO;
+    }
+
+    public Set<ItemDTO> getItemsByStudent(Long studentId)
+    {
+        Set<ItemDTO> itemDTOS = itemDAO.getItemsByStudent(studentId);
+        return itemDTOS;
     }
 }

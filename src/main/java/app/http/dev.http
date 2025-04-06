@@ -1,0 +1,7 @@
+### Populates the database with items and student
+POST http://localhost:7070/api/items/populate
+Content-Type: application/json
+
+### Shows all Items in the database
+GET http://localhost:7070/api/items
+Content-Type: application/json

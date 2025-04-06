@@ -3,10 +3,8 @@ package app.dtos;
 import app.entities.Item;
 import app.entities.Student;
 import app.enums.ItemCategory;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,6 +35,7 @@ public class ItemDTO
        if(includeDetails && item.getStudent() != null)
        {
            this.student = new StudentDTO(item.getStudent(), false);
+           this.student.getItemList().add(this);
        }
    }
 

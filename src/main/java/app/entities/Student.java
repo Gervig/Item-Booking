@@ -1,10 +1,12 @@
 package app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -23,9 +25,9 @@ public class Student
     private LocalDate enrollmentDate;
     private int phone;
 
-
-    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST) // a student should still persist even if an item is deleted
-    private Set<Item> itemList;
+    @ToString.Exclude //avoids infinite to.String recursion
+    @OneToMany(mappedBy = "student", cascade = CascadeType.PERSIST) // a student should still persist even if an item is deleted
+    private Set<Item> itemList = new HashSet<>();
 
     public void addItem(Item item)
     {

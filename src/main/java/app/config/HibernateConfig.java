@@ -1,6 +1,7 @@
 package app.config;
 
 import app.entities.Item;
+import app.entities.Student;
 import app.security.entities.Role;
 import app.security.entities.User;
 import app.utils.Utils;
@@ -53,6 +54,7 @@ public class HibernateConfig
         configuration.addAnnotatedClass(Role.class);
         configuration.addAnnotatedClass(User.class);
         configuration.addAnnotatedClass(Item.class);
+        configuration.addAnnotatedClass(Student.class);
     }
 
     private static EntityManagerFactory createEMF(boolean forTest)

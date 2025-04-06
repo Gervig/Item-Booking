@@ -4,7 +4,7 @@ import app.config.HibernateConfig;
 import app.populators.RolePopulator;
 import app.populators.UserPopulator;
 import app.rest.ApplicationConfig;
-import app.rest.Routes;
+import app.rest.ItemRoutes;
 import app.security.daos.RoleDAO;
 import app.security.daos.UserDAO;
 import app.security.entities.Role;
@@ -27,7 +27,7 @@ public class Main
                 .getInstance()
                 .initiateServer()
                 .securityCheck()
-                .setRoute(Routes.getRoutes(emf))
+                .setRoute(ItemRoutes.getRoutes(emf))
                 .setRoute(SecurityRoutes.getRoutes(emf))
                 .handleException()
                 .startServer(7070); //TODO change this to an available port for deployment
