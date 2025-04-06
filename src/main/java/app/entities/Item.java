@@ -6,7 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +23,7 @@ public class Item
     private String name;
     private BigDecimal purchasePrice;
     private ItemCategory category;
-    private Date acquisitionDate;
+    private LocalDate acquisitionDate;
     private String description;
 
     @ManyToOne(cascade = CascadeType.PERSIST) // an item should still persist even if a student is deleted

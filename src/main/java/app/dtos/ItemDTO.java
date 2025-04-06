@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +21,7 @@ public class ItemDTO
     private String name;
     private BigDecimal purchasePrice;
     private ItemCategory category;
-    private Date acquisitionDate;
+    private LocalDate acquisitionDate;
     private String description;
     private StudentDTO student;
 
