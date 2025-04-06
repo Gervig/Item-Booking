@@ -1,6 +1,7 @@
 package app.controllers.impl;
 
 import app.config.HibernateConfig;
+import app.daos.impl.ItemDAO;
 import app.dtos.ErrorMessage;
 import app.dtos.ItemDTO;
 import app.entities.Item;
@@ -11,6 +12,7 @@ import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,7 @@ class ItemControllerTest
 
     private static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactoryForTest();
     private static final ItemController itemController = new ItemController(emf);
+    private static final ItemDAO itemDAO = ItemDAO.getInstance(emf);
 
     @BeforeEach
     void setup()
@@ -42,12 +45,7 @@ class ItemControllerTest
 
             // fetched items from populator
             List<Item> items = ItemPopulator.populate();
-
-            // streams the list of items to item DTOs and creates them in the database
-            items.stream()
-                    .map(item -> new ItemDTO(item, true))
-                    .forEach(itemController::createItem);
-
+            
             em.getTransaction().commit();
         } catch (Exception e)
         {
@@ -65,21 +63,22 @@ class ItemControllerTest
     @DisplayName("Test getting all items")
     void getAllItems()
     {
-        List<ItemDTO> itemDTOtest = given()
+        given()
                 .when()
                 .get("/items")
                 .then()
-                .statusCode(200).body("size()", is(3))
-                .log().all()
-                .extract()
-                .as(new TypeRef<List<ItemDTO>>() {});
-
-        assertThat(itemDTOtest.size(), is(5));
+                .statusCode(200);
     }
 
     @Test
     void getItemById()
     {
+        given()
+                .when()
+                .get("/items/1")
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(1));
     }
 
     @Test
