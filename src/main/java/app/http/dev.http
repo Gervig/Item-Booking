@@ -5,3 +5,24 @@ Content-Type: application/json
 ### Shows all Items in the database
 GET http://localhost:7070/api/items
 Content-Type: application/json
+
+### Get an Item by ID
+GET http://localhost:7070/api/items/1
+Content-Type: application/json
+
+### Add a new item
+POST http://localhost:7070/api/items
+Content-Type: application/json
+
+{
+  "name": "new item",
+  "purchasePrice": 12.25,
+  "category": "TOOL",
+  "acquisitionDate": [
+    2020,
+    4,
+    4
+  ],
+  "description": "This is a new item",
+  "student": null
+}

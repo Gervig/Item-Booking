@@ -41,6 +41,44 @@ public class ItemRoutes
                     List<ItemDTO> itemDTOS = itemController.getAllItems();
                     ctx.json(itemDTOS);
                 });
+                get("/{id}", ctx ->
+                {
+                    try
+                    {
+                        Long id = Long.valueOf(ctx.pathParam("id"));
+                        ItemDTO itemDTO = itemController.getItemById(id);
+                        if (itemDTO == null)
+                        {
+                            throw new NullPointerException();
+                        }
+                        ctx.json(itemDTO);
+                    } catch (Exception e)
+                    {
+                        ErrorMessage error = new ErrorMessage("No Item with that ID");
+                        ctx.status(404).json(error);
+                    }
+                });
+                post("/", ctx ->
+                {
+                    try
+                    {
+                        ItemDTO incomingItem = ctx.bodyAsClass(ItemDTO.class);
+                        ItemDTO returnedItem = itemController.createItem(incomingItem);
+                        if(returnedItem == null)
+                        {
+                            throw new NullPointerException();
+                        }
+                        ctx.json(returnedItem);
+                    } catch (IllegalStateException ise)
+                    {
+                        ErrorMessage error = new ErrorMessage("Incorrect JSON");
+                        ctx.status(400).json(error);
+                    } catch (NullPointerException npe)
+                    {
+                        ErrorMessage error = new ErrorMessage("Item with that name already exists");
+                        ctx.status(400).json(error);
+                    }
+                });
                 post("/populate", ctx ->
                 {
                     List<Item> items = ItemPopulator.populate();
