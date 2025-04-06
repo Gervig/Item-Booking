@@ -5,6 +5,7 @@ import app.daos.impl.ItemDAO;
 import app.dtos.ErrorMessage;
 import app.dtos.ItemDTO;
 import app.entities.Item;
+import app.entities.Student;
 import app.populators.ItemPopulator;
 import app.rest.ApplicationConfig;
 import app.rest.ItemRoutes;
@@ -38,36 +39,62 @@ class ItemControllerTest
         try (EntityManager em = emf.createEntityManager())
         {
             em.getTransaction().begin();
-            em.createQuery("DELETE FROM Item i").executeUpdate();
-            em.createQuery("DELETE FROM Student s").executeUpdate();
+
+            em.createQuery("DELETE FROM Item").executeUpdate();
+            em.createQuery("DELETE FROM Student").executeUpdate();
             em.createNativeQuery("ALTER SEQUENCE item_id_seq RESTART WITH 1").executeUpdate();
             em.createNativeQuery("ALTER SEQUENCE student_id_seq RESTART WITH 1").executeUpdate();
 
-            // fetched items from populator
             List<Item> items = ItemPopulator.populate();
-            
+
+            // persist all students first
+            items.stream()
+                    .map(Item::getStudent)
+                    .filter(student -> student != null)
+                    .distinct()
+                    .forEach(em::persist);
+
+            // then persist items
+            items.forEach(item ->
+            {
+                if (item.getStudent() != null)
+                {
+                    item.setStudent(em.find(Student.class, item.getStudent().getId()));
+                }
+                em.persist(item);
+            });
+
             em.getTransaction().commit();
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-        ApplicationConfig
-                .getInstance()
+
+        ApplicationConfig.getInstance()
                 .initiateServer()
                 .setRoute(ItemRoutes.getRoutes(emf))
                 .startServer(7777);
+
         RestAssured.baseURI = "http://localhost:7777/api";
     }
+
 
     @Test
     @DisplayName("Test getting all items")
     void getAllItems()
     {
-        given()
+        List<ItemDTO> itemDTOTest = given()
                 .when()
                 .get("/items")
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .body("size()", is(5))
+                .log().all()
+                .extract()
+                .as(new TypeRef<List<ItemDTO>>(){});
+
+        assertThat(itemDTOTest.size(), is(5));
+
     }
 
     @Test
@@ -84,6 +111,9 @@ class ItemControllerTest
     @Test
     void createItem()
     {
+        given()
+                .when()
+                .post()
     }
 
     @Test
