@@ -57,7 +57,7 @@ public class ItemController implements IItem<ItemDTO, StudentDTO, Long>
         // if not creates them and adds them to the item
         if (student != null && student.getId() == null)
         {
-            //TODO for some reason student IDs serializes skips whenever I try to persists an existing student
+            //TODO for some reason student IDs serializes skips one whenever I try to persists an existing student
             student = studentDAO.create(student);
             item.setStudent(student);
         }
