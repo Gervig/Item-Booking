@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.sql.Date;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -21,7 +20,7 @@ public class Student
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Date enrollmentDate;
+    private LocalDate enrollmentDate;
     private int phone;
 
 

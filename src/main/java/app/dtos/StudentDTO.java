@@ -6,8 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,7 +18,7 @@ public class StudentDTO
 {
     private Long id;
     private String name;
-    private Date enrollmentDate;
+    private LocalDate enrollmentDate;
     private int phone;
     private Set<ItemDTO> itemList;
 
