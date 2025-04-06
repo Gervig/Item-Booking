@@ -103,7 +103,7 @@ public class ItemDAO implements IDAO<Item, Long>
         }
     }
 
-    public void addItemToStudent(Long itemId, Long studentId)
+    public Item addItemToStudent(Long itemId, Long studentId)
     {
         try(EntityManager em = emf.createEntityManager())
         {
@@ -116,7 +116,8 @@ public class ItemDAO implements IDAO<Item, Long>
             student.addItem(item);
             item.setStudent(student);
             studentDAO.update(student);
-            update(item);
+            Item updatedItem = update(item);
+            return updatedItem;
         } catch (Exception e)
         {
             throw new ApiException(401, "Error adding item to student", e);
