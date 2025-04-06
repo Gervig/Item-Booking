@@ -2,6 +2,7 @@ package app.daos.impl;
 
 import app.daos.IDAO;
 import app.dtos.ItemDTO;
+import app.dtos.StudentDTO;
 import app.entities.Item;
 import app.entities.Student;
 import app.exceptions.ApiException;
@@ -128,12 +129,16 @@ public class ItemDAO implements IDAO<Item, Long>
         {
         Student student = em.find(Student.class, studentId);
 
+        // reads all items for a given student and converts them to DTOs, which is then saved in a set
         Set<ItemDTO> itemSet = em.createQuery("SELECT i FROM Item i JOIN i.student s WHERE s.id = :studentId", Item.class)
                 .setParameter("studentId", studentId)
                 .getResultList()
                 .stream()
-                .map(item -> new ItemDTO(item,true))
+                .map(item -> new ItemDTO(item,false))
                 .collect(Collectors.toSet());
+
+        // converts the student entity to student DTO and sets the student for each item DTO
+        itemSet.forEach(itemDTO -> itemDTO.setStudent(new StudentDTO(student, true)));
 
         return itemSet;
 
