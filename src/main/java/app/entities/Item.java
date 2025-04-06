@@ -31,7 +31,7 @@ public class Item
     @Setter
     private String description;
 
-    @ManyToOne(cascade = CascadeType.PERSIST) // an item should still persist even if a student is deleted
+    @ManyToOne
     @JoinColumn(name = "item_id")
     @Setter
     private Student student;
