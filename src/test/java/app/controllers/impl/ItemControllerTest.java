@@ -4,6 +4,7 @@ import app.config.HibernateConfig;
 import app.daos.impl.ItemDAO;
 import app.dtos.ErrorMessage;
 import app.dtos.ItemDTO;
+import app.dtos.StudentDTO;
 import app.entities.Item;
 import app.entities.Student;
 import app.enums.ItemCategory;
@@ -23,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -183,16 +185,27 @@ class ItemControllerTest
     }
 
     @Test
+    @DisplayName("Test assigning an item to a student")
     void addItemToStudent()
     {
+        given()
+                .when()
+                .contentType(contentType)
+                .accept(contentType)
+                .put("items/5/students/1")
+                .then()
+                .statusCode(200)
+                .body("student.name", equalTo("Student 1"));
 
     }
 
     @Test
     void getItemsByStudent()
     {
+
     }
 
+    // helper methods to create test DTOs
     private ItemDTO getTestItemDTO()
     {
         ItemDTO itemDTO = ItemDTO.builder()
@@ -203,5 +216,18 @@ class ItemControllerTest
                 .description("This is a test item")
                 .build();
         return itemDTO;
+    }
+
+    private StudentDTO getTestStudentDTO()
+    {
+        StudentDTO studentDTO = StudentDTO.builder()
+                .id(42L)
+                .name("Test student")
+                .enrollmentDate(null) // jackson can't handle LocalDate for some reason
+                .phone(13276548)
+                .itemList(new HashSet<>())
+                .build();
+
+        return studentDTO;
     }
 }
