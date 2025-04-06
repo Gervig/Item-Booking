@@ -17,6 +17,10 @@ etc, in the medialab and makerlab.
 | api/items/{itemId}/students/{studentId} | PUT    | Assign an item to a student |
 | api/items/populate                      | POST   | Populate the database       |
 
+# Theoretical questions
+* **3.3.3**: Why is PUT used for assigning an item to a student instead of POST?
+  - PUT is an update, whereas POST is the same as creating something new. Since we just want to assign an item to a student and not create a completely new student, we use PUT.
+
 # Security Endpoint Table
 
 | Endpoints                         | Method | Secured      | Description                     |
@@ -30,3 +34,4 @@ etc, in the medialab and makerlab.
 ✅ = User secured
 
 🔒 = Admin secured
+
