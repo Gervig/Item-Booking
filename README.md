@@ -10,10 +10,10 @@ etc, in the medialab and makerlab.
 | Endpoints                               | Method | Description                 |
 |:----------------------------------------|:-------|:----------------------------|
 | api/items                               | GET    | Get all items               |
-| api/items{id}                           | GET    | Get an item by ID           |
+| api/items/{id}                          | GET    | Get an item by ID           |
 | api/items                               | POST   | Add a new item              |
-| api/items{id}                           | PUT    | Update an item              |
-| api/items{id}                           | DELETE | Delete an item              |
+| api/items/{id}                          | PUT    | Update an item              |
+| api/items/{id}                          | DELETE | Delete an item              |
 | api/items/{itemId}/students/{studentId} | PUT    | Assign an item to a student |
 | api/items/populate                      | POST   | Populate the database       |
 
