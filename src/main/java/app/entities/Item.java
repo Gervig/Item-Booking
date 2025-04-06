@@ -20,10 +20,15 @@ public class Item
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Setter
     private String name;
+    @Setter
     private BigDecimal purchasePrice;
+    @Setter
     private ItemCategory category;
+    @Setter
     private LocalDate acquisitionDate;
+    @Setter
     private String description;
 
     @ManyToOne(cascade = CascadeType.PERSIST) // an item should still persist even if a student is deleted
