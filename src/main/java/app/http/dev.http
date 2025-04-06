@@ -6,8 +6,12 @@ Content-Type: application/json
 GET http://localhost:7070/api/items
 Content-Type: application/json
 
-### Get an Item by ID
+### Get an Item by ID (200)
 GET http://localhost:7070/api/items/1
+Content-Type: application/json
+
+### Get an Item by ID (404)
+GET http://localhost:7070/api/items/99
 Content-Type: application/json
 
 ### Add a new item
@@ -35,8 +39,12 @@ Content-Type: application/json
   "purchasePrice": 7.55
 }
 
-### Delete an item
+### Delete an item (204)
 DELETE http://localhost:7070/api/items/1
+Content-Type: application/json
+
+### Delete an item (404)
+DELETE http://localhost:7070/api/items/99
 Content-Type: application/json
 
 ### Assign an item to a student
