@@ -3,6 +3,7 @@ package app.rest;
 import app.controllers.impl.ItemController;
 import app.dtos.ErrorMessage;
 import app.dtos.ItemDTO;
+import app.dtos.StudentDTO;
 import app.entities.Item;
 import app.entities.Student;
 import app.populators.ItemPopulator;
@@ -64,7 +65,7 @@ public class ItemRoutes
                     {
                         ItemDTO incomingItem = ctx.bodyAsClass(ItemDTO.class);
                         ItemDTO returnedItem = itemController.createItem(incomingItem);
-                        if(returnedItem == null)
+                        if (returnedItem == null)
                         {
                             throw new NullPointerException();
                         }
@@ -90,7 +91,7 @@ public class ItemRoutes
                             throw new NullPointerException();
                         }
                         ItemDTO incomingTrip = ctx.bodyAsClass(ItemDTO.class);
-                        if(incomingTrip.getId() == null)
+                        if (incomingTrip.getId() == null)
                         {
                             incomingTrip.setId(id); // in case the body forgot to add the id
                         }
@@ -103,6 +104,42 @@ public class ItemRoutes
                     } catch (Exception e)
                     {
                         ErrorMessage error = new ErrorMessage("No trip with that ID");
+                        ctx.status(404).json(error);
+                    }
+                });
+                delete("/{id}", ctx ->
+                {
+                    Long id = Long.valueOf(ctx.pathParam("id"));
+                    try
+                    {
+                        ItemDTO test = itemController.getItemById(id);
+                        if (test == null)
+                        {
+                            throw new NullPointerException();
+                        }
+                        itemController.deleteItem(id);
+                        ctx.status(204);
+                    } catch (Exception e)
+                    {
+                        ErrorMessage error = new ErrorMessage("No item with that ID");
+                        ctx.status(404).json(error);
+                    }
+                });
+                put("/{itemId}/students/{studentId}", ctx ->
+                {
+                    Long itemId = Long.valueOf(ctx.pathParam("itemId"));
+                    Long studentId = Long.valueOf(ctx.pathParam("studentId"));
+                    try
+                    {
+                        ItemDTO itemDTO = itemController.addItemToStudent(itemId, studentId);
+                        ctx.json(itemDTO);
+                    } catch (IllegalStateException ise)
+                    {
+                        ErrorMessage error = new ErrorMessage("Incorrect JSON");
+                        ctx.status(400).json(error);
+                    } catch (Exception e)
+                    {
+                        ErrorMessage error = new ErrorMessage("No item or student with that ID");
                         ctx.status(404).json(error);
                     }
                 });

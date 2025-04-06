@@ -34,3 +34,11 @@ Content-Type: application/json
 {
   "purchasePrice": 7.55
 }
+
+### Delete an item
+DELETE http://localhost:7070/api/items/1
+Content-Type: application/json
+
+### Assign an item to a student
+PUT http://localhost:7070/api/items/5/students/1
+Content-Type: application/json
