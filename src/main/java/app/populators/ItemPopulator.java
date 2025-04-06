@@ -60,6 +60,7 @@ public class ItemPopulator
         items.add(i4);
         students.get(1).addItem(i4);
 
+        // item 5 has no student, also student 3 has no items
         Item i5 = Item.builder()
                 .name("Item 5")
                 .purchasePrice(BigDecimal.valueOf(75.00))
